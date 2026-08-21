@@ -1,0 +1,108 @@
+1. Entidades obligatorias
+Producto
+id — Clave primaria.
+nombre
+precio
+DetalleProducto
+id — Clave primaria y clave foránea de Producto.
+descripcionLarga
+peso
+
+La relación entre Producto y DetalleProducto es 1:1.
+
+Almacen
+id — Clave primaria.
+nombre
+ubicacion
+almacenes_productos
+
+Tabla intermedia para representar la relación muchos a muchos entre Almacen y Producto.
+
+id_almacen — PK y FK de Almacen.
+id_producto — PK y FK de Producto.
+cantidad — Cantidad de unidades disponibles.
+
+La clave primaria está formada por la combinación:
+
+(id_almacen, id_producto)
+
+2. Endpoints
+Productos
+GET /productos
+
+Obtiene todos los productos.
+
+GET /productos/buscar?almacen=xxx
+
+Obtiene todos los productos almacenados en un almacén determinado mediante @RequestParam.
+
+No es necesario devolver el detalle del producto.
+
+POST /productos
+
+Crea un nuevo producto junto con su detalle asociado.
+
+PUT /productos/{id}
+
+Actualiza los datos del producto indicado mediante su id.
+
+DELETE /productos/{id}
+
+Elimina el producto indicado mediante su id.
+
+Detalles de productos
+GET /detalle/{id}
+
+Obtiene el detalle de un producto mediante su id.
+
+POST /detalle
+
+Crea un nuevo detalle de producto.
+
+Debe:
+
+Recibir un JSON con todos los datos del detalle.
+Comprobar que el producto asociado existe previamente en la tabla PRODUCTOS.
+Almacenes
+GET /almacenes
+
+Obtiene todos los almacenes registrados.
+
+Gestión del stock
+POST /stock/aumentar
+
+Aumenta el stock de un producto en un almacén.
+
+Parámetros obligatorios mediante @RequestParam:
+
+idProducto
+idAlmacen
+cantidad
+
+Si se va a insertar una nueva combinación idProducto-idAlmacen, se debe comprobar:
+
+Que el producto existe.
+Que el producto tiene un detalle asociado.
+Que el almacén existe.
+
+Si todas las comprobaciones son correctas, se crea o actualiza el registro de stock.
+
+POST /stock/disminuir
+
+Disminuye el stock de un producto en un almacén.
+
+Parámetros obligatorios mediante @RequestParam:
+
+idProducto
+idAlmacen
+cantidad
+
+Se debe validar que:
+
+El producto existe.
+El almacén existe.
+Existe una relación de stock entre el producto y el almacén.
+La cantidad solicitada puede descontarse.
+El stock nunca puede quedar en negativo.
+
+La disminución del stock requiere controlar la lógica necesaria para evitar cantidades negativas.
